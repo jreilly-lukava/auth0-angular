@@ -250,6 +250,10 @@ export class AuthService implements OnDestroy {
   ): Observable<string> {
     return of(this.auth0Client).pipe(
       concatMap((client) => client.getTokenSilently(options)),
+      catchError((error) => {
+        this.errorSubject$.next(error);
+        return of(undefined);
+      }),
       tap(() => this.refreshState$.next())
     );
   }
